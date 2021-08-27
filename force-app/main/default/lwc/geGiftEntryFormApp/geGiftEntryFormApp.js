@@ -47,6 +47,7 @@ export default class GeGiftEntryFormApp extends NavigationMixin(LightningElement
     errorCallback;
     _isBatchProcessing = false;
     isElevateCustomer = false;
+    isRecurringGift = false;
 
     namespace;
     isLoading = true;
@@ -64,6 +65,27 @@ export default class GeGiftEntryFormApp extends NavigationMixin(LightningElement
         } catch(error) {
             handleError(error);
         }
+    }
+
+    handleToggleRecurringDonation(event) {
+        console.log('handleToggleRecurringDonation: ', deepClone(event.detail));
+        this.isRecurringGift = event.detail.checked;
+    }
+
+    handleCloseRecurringDonationModal() {
+        this.isRecurringGift = false;
+    }
+
+    handleApplyRecurringDonationData(pubsubEvent) {
+        console.log('handleApplyRecurringDonationData: ', deepClone(pubsubEvent));
+        this.handleCloseRecurringDonationModal();
+        const recurringDonation = pubsubEvent.allFields;
+        // TODO: map recurringDonation fields to gift fields
+        this.gift.updateFieldsWith({
+            Donation_Amount__c: recurringDonation.npe03__Amount__c,
+            Recurring_Donation_Installment_Period__c: recurringDonation.npe03__Installment_Period__c
+        });
+        this.giftInView = this.gift.state();
     }
 
     handleLoadData(event) {
@@ -110,6 +132,8 @@ export default class GeGiftEntryFormApp extends NavigationMixin(LightningElement
         this.isElevateCustomer = await checkForElevateCustomer();
         registerListener('geBatchGiftEntryTableChangeEvent', this.retrieveBatchTotals, this);
         registerListener('refreshbatchtable', this.refreshBatchTable, this);
+        registerListener('closerecurringdonationmodal', this.handleCloseRecurringDonationModal, this);
+        registerListener('applyrecurringdonationdata', this.handleApplyRecurringDonationData, this);
 
         if (this.recordId) {
             this.giftBatchState = await this.giftBatch.init(this.recordId);

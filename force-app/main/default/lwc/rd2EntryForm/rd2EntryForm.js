@@ -63,6 +63,7 @@ import CONTACT_FIRST_NAME from '@salesforce/schema/Contact.FirstName';
 import CONTACT_LAST_NAME from '@salesforce/schema/Contact.LastName';
 import ACCOUNT_NAME from '@salesforce/schema/Account.Name';
 import ACCOUNT_PRIMARY_CONTACT_LAST_NAME from '@salesforce/schema/Account.npe01__One2OneContact__r.LastName';
+import { fireEvent } from 'c/pubsubNoPageRef';
 
 
 const STATUS_CLOSED = 'Closed';
@@ -105,6 +106,7 @@ export default class rd2EntryForm extends LightningElement {
 
     @api parentId;
     @api recordId;
+    @api isInGiftEntry = false;
 
     @track isEdit = false;
     @track isCommitmentEdit = false;
@@ -196,6 +198,7 @@ export default class rd2EntryForm extends LightningElement {
     * @description Get settings required to enable or disable fields and populate their values
     */
     connectedCallback() {
+        console.log('connectedCallback: ', this.isInGiftEntry);
         getRecurringSettings({ parentId: this.parentId })
             .then(response => {
                 this.isAutoNamingEnabled = response.isAutoNamingEnabled;
@@ -575,6 +578,14 @@ export default class rd2EntryForm extends LightningElement {
 
         if (this.isFormValid()) {
             const allFields = this.getAllFields();
+
+            if (this.isInGiftEntry) {
+                fireEvent(this, 'applyrecurringdonationdata', { allFields: allFields });
+                this.isLoading = false;
+                this.isSaveButtonDisabled = false;
+                return;
+            }
+
             if (this.shouldSendToElevate(allFields)) {
                 this.processCommitmentSubmit(allFields);
 
@@ -766,6 +777,9 @@ export default class rd2EntryForm extends LightningElement {
     * @description Fires an event to utilDedicatedListener with the cancel action
     */
     handleCancel() {
+        if (this.isInGiftEntry) {
+            fireEvent(this, 'closerecurringdonationmodal', {});
+        }
         this.closeModal(this.recordId);
     }
 

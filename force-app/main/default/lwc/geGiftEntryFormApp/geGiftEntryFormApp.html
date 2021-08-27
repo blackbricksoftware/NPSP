@@ -43,6 +43,19 @@
             </template>
 
             <template if:false={isBatchProcessing}>
+                <lightning-input type="toggle"
+                                 label="Make recurring donation"
+                                 name="input1"
+                                 onchange={handleToggleRecurringDonation}
+                                 checked={isRecurringGift}
+                                 style="width: fit-content;">
+                </lightning-input>
+
+                <template if:true={isRecurringGift}>
+                    <c-rd2-entry-form is-in-gift-entry="true">
+                    </c-rd2-entry-form>
+                </template>
+
                 <c-ge-form-renderer
                         gift-in-view={giftInView}
                         onformstatechange={handleFormStateChange}
