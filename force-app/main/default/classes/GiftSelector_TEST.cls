@@ -31,6 +31,17 @@
 private class GiftSelector_TEST {
 
     @isTest
+    private static void shouldExcludeIndescribableFields() {
+        mockElevateCustomerStatus(true);
+        GiftSelector selector = new GiftSelector();
+        selector.additionalGiftsFieldsToQuery = new List<String> {'npe01__Check_Reference_Number__c', 'dummy_field__c'};
+        List<String> selectFields = selector.fields();
+
+        System.assert(!selectFields.contains('npe01__Check_Reference_Number__c'));
+        System.assert(!selectFields.contains('dummy_field__c'));
+    }
+
+    @isTest
     private static void shouldIncludeElevateFields() {
         mockElevateCustomerStatus(true);
         GiftSelector selector = new GiftSelector();
