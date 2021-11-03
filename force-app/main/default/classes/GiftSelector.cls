@@ -35,7 +35,7 @@
 
 public with sharing class GiftSelector {
 
-    private List<String> additionalGiftsFieldsToQuery;
+    @testVisible private List<String> additionalGiftsFieldsToQuery;
     private List<Id> giftIds;
     private Integer giftsOffset;
     private Integer giftsLimit;
@@ -159,9 +159,9 @@ public with sharing class GiftSelector {
         List<String> hasReadAccessTo = new List<String>();
         for (String fieldApiName : fieldsToValidate) {
             DescribeFieldResult fieldDescribe =
-                Schema.SObjectType.DataImport__c.fields.getMap().get(fieldApiName).getDescribe();
+                Schema.SObjectType.DataImport__c.fields.getMap().get(fieldApiName)?.getDescribe();
 
-            If (fieldDescribe.isAccessible()) {
+            if (fieldDescribe != null && fieldDescribe.isAccessible()) {
                 hasReadAccessTo.add(fieldApiName);
             }
         }
