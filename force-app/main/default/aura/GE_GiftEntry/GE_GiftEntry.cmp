@@ -1,4 +1,4 @@
-<aura:component implements="force:appHostable">
+<aura:component access="global" implements="force:appHostable">
     <aura:dependency resource="c:geBatchWizard" />
     <aura:dependency resource="c:geTemplateBuilderSectionModalBody" />
     <aura:dependency resource="c:utilDualListbox" />
