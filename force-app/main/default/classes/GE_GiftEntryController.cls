@@ -35,7 +35,7 @@
 * @description Controller for the Gift Entry lightning web components and processing
 * form save.
 */
-public with sharing class GE_GiftEntryController {
+global with sharing class GE_GiftEntryController {
 
     public static final String PURCHASE_CALL_TIMEOUT_MESSAGE = System.Label.geErrorRequestTimedout;
     private static final String BOOLEAN_DATA_TYPE = 'BOOLEAN';

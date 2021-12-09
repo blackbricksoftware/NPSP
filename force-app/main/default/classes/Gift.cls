@@ -33,7 +33,7 @@
 * @description Gift entity class in NPSP.
 */
 
-public with sharing class Gift {
+global with sharing class Gift {
 
     @TestVisible private Data_Import_Settings__c dataImportSettings;
     @TestVisible private DataImport__c dataImport;
